@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html class="no-js">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <title></title>
+    <meta name="description" content="">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <link rel="stylesheet" href="">
+  </head>
+  <body>
+    <h1>RPS</h1>
+
+    <div class="input-group mb-3">
+      <input type="text" id="username-input" class="form-control" placeholder="Please submit a username">
+      <div class="input-group-append">
+        <button id="username-button" class="btn btn-outline-secondary" type="button">Submit</button>
+      </div>
+    </div>
+
+    <button class="rps-button" id="rock" value="rock">Rock</button>
+    <button class="rps-button" id="paper" value="paper">Paper</button>
+    <button class="rps-button" id="scissor" value="scissor">Scissor</button>
+
+    <div id="current-choice"></div>
+    <div id="results-output"></div>
+    <div id="choices-output"></div>
+
+    <script src="https://www.gstatic.com/firebasejs/5.9.2/firebase.js"></script>
+    <script src="game.js" async defer></script>
+  </body>
+</html>
