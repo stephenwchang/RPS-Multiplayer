@@ -39,6 +39,7 @@ disableRpsButtons(true);
 
 // requesting username input from user
 usernameButton.addEventListener('click', function() {
+usernameButton.disabled = true;
   game.get().then(function(doc) {
     if (!doc.data().userOne) {
       userNumber = 1;
@@ -161,3 +162,72 @@ function disableRpsButtons(boolean) {
   document.getElementById("paper").disabled = boolean;
   document.getElementById("scissor").disabled = boolean;
 }
+
+
+
+// chat functionality
+
+
+const chatInput = document.getElementById('chat-input');
+const chatBox = document.getElementById('chat-box');
+const button = document.getElementById('button');
+
+db.collection("HW-7-Chat").orderBy("date")
+.onSnapshot(function(snapshot) {
+    snapshot.docChanges().forEach(function(change) {
+        if (change.type === "added") {
+          renderChat(change.doc.data().text, change.doc.data().timestamp, change.doc.data().user);
+        }
+        if (change.type === "modified") {
+            console.log("Modified city: ", change.doc.data());
+        }
+        if (change.type === "removed") {
+            console.log("Removed city: ", change.doc.data());
+        }
+    });
+});
+
+
+
+// on button click, set variable to input, input into server
+button.addEventListener('click', function() {
+  if (userName) {
+    let text = chatInput.value.trim();
+    let date = Date.now();
+    let timeStamp = moment().format("hh:mm A");
+
+    db.collection('HW-7-Chat').add({
+      text: text,
+      date: date,
+      timestamp:timeStamp,
+      user: userName
+    })
+    chatInput.value = '';
+  } else {
+    alert('please enter a username before chatting')
+  }
+});
+
+// renders chat
+function renderChat(text, time, user) {
+  let div = document.createElement('div');
+  div.setAttribute('class', 'chat-line');
+  div.innerHTML = time + ": " + user + ": " + text;
+  chatBox.appendChild(div);
+
+  // automatically scroll to bottom of chat box
+  chatBox.scrollTop = chatBox.scrollHeight;
+
+}
+
+// enter key = submit button
+
+chatInput.addEventListener("keyup", function(event) {
+  // Number 13 is the "Enter" key on the keyboard
+  if (event.keyCode === 13) {
+    // Cancel the default action, if needed
+    event.preventDefault();
+    // Trigger the button element with a click
+    button.click();
+  }
+});

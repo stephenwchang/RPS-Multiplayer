@@ -1,0 +1,20 @@
+.jumbotron {
+  text-align:center;
+  background-image: url("../images/tilted.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+}
+
+#chat-box {
+  margin-top: 20px;
+  height: 20rem;
+  background-color: lightblue;
+  overflow-y: auto;
+}
+
+#username-overlay {
+  opacity: 0.9;
+  background-color: lightgrey;
+  height: 357.986px;
+  margin-bottom: -22.3em
+}
