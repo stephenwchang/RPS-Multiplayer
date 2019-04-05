@@ -17,13 +17,15 @@ const db = firebase.firestore(),
       usernameInput = document.getElementById("username-input"),
       resultsOutput = document.getElementById("results-output"),
       currentChoice = document.getElementById("current-choice"),
-      choicesOutput = document.getElementById("choices-output");
+      choicesOutput = document.getElementById("choices-output"),
+      waiting = document.getElementById("waiting-for-opponent");
 
 let usersOnline,
     userChoice,
     userId,
     userName,
-    userNumber;
+    userNumber,
+    choicePicked = false;
 
 // disable game buttons prior to usernames being submitted as well as reset game on page load
 game.update({
@@ -62,11 +64,13 @@ usernameButton.addEventListener('click', function() {
 
 // listener
 game.onSnapshot(function(doc) {
-  // RPS logic on event listener, triggers when both user choices are truthy
   let userOneChoice = doc.data().userOneChoice,
       userTwoChoice = doc.data().userTwoChoice,
       userOneName = doc.data().userOne,
       userTwoName = doc.data().userTwo;
+
+
+  // RPS logic on event listener, triggers when both user choices are truthy
   if (userOneChoice && userTwoChoice) {
     setTimeout(function(){
       disableRpsButtons(false);
@@ -79,6 +83,7 @@ game.onSnapshot(function(doc) {
       });
     }, 5000);
 
+    choicePicked = false;
     choicesOutput.innerHTML = userOneName + " chose " + userOneChoice + ". " + userTwoName + " chose " + userTwoChoice + ".";
 
     if (userOneChoice === userTwoChoice) {
@@ -110,6 +115,19 @@ game.onSnapshot(function(doc) {
       }
     }
   }
+
+  // opponent status
+  if (userName && userOneName && !userTwoName) {
+    waiting.innerHTML = "waiting for opponent...";
+  } else if (!userName && userOneName && !userTwoName) {
+    waiting.innerHTML = "you have an opponent waiting, please enter a username!";
+  } else if (userOneName && userTwoName && !userOneChoice && !userTwoChoice) {
+    waiting.innerHTML = "Make your choice! Good luck!";
+  } else if (!choicePicked && (userOneChoice && !userTwoChoice || userTwoChoice && !userOneChoice)) {
+    waiting.innerHTML = "You're opponent has made their choice. Now it is up to you.";
+  } else {
+    waiting.innerHTML = "";
+  }
 });
 
 // click function on each rps button
@@ -121,6 +139,7 @@ Array.from(rpsButton).forEach(function(element) {
 
     userChoice = this.value;
     currentChoice.innerHTML = "You have currently selected " + userChoice;
+    choicePicked = true;
 
     // get data to see which if userchoices have already been made
       if (userNumber === 1) {
